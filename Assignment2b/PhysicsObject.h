@@ -19,6 +19,7 @@ protected:
 	void ApplyFriction(float strength);
 
 public:
+	PhysicsObject();
 	PhysicsObject(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position);
 	virtual void Update(float timestep);
 

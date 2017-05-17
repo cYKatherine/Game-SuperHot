@@ -4,16 +4,18 @@
 #include "Ammunition.h"
 
 
-Player::Player(Camera* cam, Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, InputController* input) :
-	PhysicsObject(mesh, shader, texture, position)
-{
+Player::Player(Camera* cam, InputController* input) {
 	m_camera = cam;
 	m_input = input;
 
 	m_moveSpeed = 3.0f;
-	m_rotationSpeed = 0.5f;
+	m_rotationSpeed = 1.0f;
 	m_cameraHeight = 1.8f;
 	m_lookAtXRotation = 0;
+
+	m_minBounds = Vector3(-0.2f, 0.0f, -0.2f);
+	m_maxBounds = Vector3(0.2f, m_cameraHeight, 0.2f);
+	m_boundingBox = CBoundingBox(m_position + m_minBounds, m_position + m_maxBounds);
 
 	m_fireCoolDown = 50;
 	m_lastTimeShoot = 0;
@@ -24,8 +26,6 @@ Player::Player(Camera* cam, Mesh* mesh, Shader* shader, Texture* texture, Vector
 	m_frictionAmount = 0.08f;
 
 	m_health = 500;
-
-	m_boundingBox = CBoundingBox(m_position + m_mesh->GetMin(), m_position + m_mesh->GetMax());
 }
 
 void Player::Update(float timestep)
@@ -111,13 +111,10 @@ void Player::Update(float timestep)
 	m_camera->SetPosition(cameraPos);
 	m_camera->SetLookAt(lookAt);
 
-	// Keep bounds up to date with position
-	m_boundingBox.SetMin(m_position + m_mesh->GetMin());
-	m_boundingBox.SetMax(m_position + m_mesh->GetMax());
+	// Keep collider up to date with our position
+	m_boundingBox.SetMin(m_position + m_minBounds);
+	m_boundingBox.SetMax(m_position + m_maxBounds);
 
-	//std::cout << currentPos.x << currentPos.y << currentPos.z << "\n";
-
-	PhysicsObject::Update(timestep);
 }
 
 int Player::getHealth() {

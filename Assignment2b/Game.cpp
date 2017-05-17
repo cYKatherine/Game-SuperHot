@@ -193,11 +193,7 @@ void Game::InitGameWorld()
 
 void Game::InitPlayers()
 {
-	m_player = new Player(m_currentCam, m_meshManager->GetMesh("Assets/Meshes/enemy.obj"),
-		m_diffuseTexturedFogShader,
-		m_textureManager->GetTexture("Assets/Textures/gradient_red.png"),
-		Vector3(0, 0, -10),
-		m_input);
+	m_player = new Player(m_currentCam, m_input);
 
 	m_gameObjects.push_back(m_player);
 	m_players.push_back(m_player);

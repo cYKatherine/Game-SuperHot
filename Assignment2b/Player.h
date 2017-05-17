@@ -24,6 +24,8 @@ protected:
 	InputController* m_input;
 
 	CBoundingBox m_boundingBox;
+	Vector3 m_minBounds;
+	Vector3 m_maxBounds;
 
 	float m_moveSpeed;
 	float m_rotationSpeed;
@@ -41,7 +43,7 @@ protected:
 	Matrix m_pitch;
 
 public:
-	Player(Camera* cam, Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, InputController* input);
+	Player(Camera* cam, InputController* input);
 
 	virtual void Update(float timestep);
 
