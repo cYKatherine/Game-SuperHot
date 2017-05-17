@@ -8,7 +8,7 @@ Enemy::Enemy(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, int
 	PhysicsObject(mesh, shader, texture, position)
 {
 	m_playerToFollow = playerToFollow;
-	m_moveSpeed = 0.1f;
+	m_moveSpeed = MathsHelper::RandomRange(0.05f, 0.1f);
 	m_enemyNo = enemyNo;
 	m_rubies = rubies;
 	m_health = 100;
