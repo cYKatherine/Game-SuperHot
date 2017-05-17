@@ -1,5 +1,12 @@
 #include "PhysicsObject.h"
 
+PhysicsObject::PhysicsObject() :
+	GameObject()
+{
+	m_velocity = Vector3::Zero;
+	m_acceleration = Vector3::Zero;
+}
+
 PhysicsObject::PhysicsObject(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position) : 
 	GameObject(mesh, shader, texture, position)
 {

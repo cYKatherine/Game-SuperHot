@@ -42,6 +42,7 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 	m_input = input;
 	m_meshManager = new MeshManager();
 	m_textureManager = new TextureManager();
+	m_currentCam = new Camera();
 
 	m_healthBarRect = { 0, 0, 0, 0 };
 	m_hurtOverlayColor = NULL;
@@ -63,7 +64,6 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets);
 
-	m_currentCam = new FirstPersonCamera(m_input, m_player);
 
 	return true;
 }
@@ -193,11 +193,7 @@ void Game::InitGameWorld()
 
 void Game::InitPlayers()
 {
-	m_player = new Player(m_meshManager->GetMesh("Assets/Meshes/enemy.obj"),
-		m_diffuseTexturedFogShader,
-		m_textureManager->GetTexture("Assets/Textures/gradient_red.png"),
-		Vector3(0, 0, -10),
-		m_input);
+	m_player = new Player(m_currentCam, m_input);
 
 	m_gameObjects.push_back(m_player);
 	m_players.push_back(m_player);

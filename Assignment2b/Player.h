@@ -19,12 +19,18 @@ class Ammunition;
 class Player : public PhysicsObject
 {
 protected:
+	Camera* m_camera;
+
 	InputController* m_input;
 
 	CBoundingBox m_boundingBox;
+	Vector3 m_minBounds;
+	Vector3 m_maxBounds;
 
 	float m_moveSpeed;
 	float m_rotationSpeed;
+	float m_cameraHeight;
+	float m_lookAtXRotation;
 
 	float m_fireCoolDown;
 	float m_lastTimeShoot;
@@ -34,9 +40,10 @@ protected:
 	int m_bulletNo = 0;
 
 	Matrix m_heading;
+	Matrix m_pitch;
 
 public:
-	Player(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, InputController* input);
+	Player(Camera* cam, InputController* input);
 
 	virtual void Update(float timestep);
 
