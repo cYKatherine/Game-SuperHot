@@ -1,0 +1,45 @@
+Texture2D meshTexture;
+SamplerState samplerType;
+
+struct PixelInput
+{
+	float4 position : SV_POSITION;
+	float4 colour : COLOR;
+	float3 normal : NORMAL;
+	float2 uv : TEXCOORD;
+	float depth : FOG;
+};
+
+float4 main(PixelInput input) : SV_TARGET
+{
+	// A hard coded directional light (we'll pass this in from our engine later in the semester)
+	float3 lightDirection = {0.0f, 0.894427f, -0.447214f};
+
+	// Ambient light is applied evenly to all surfaces in the scene
+	float4 ambient = {0.3f, 0.3f, 0.3f, 1.0f};
+
+	// This looks great if you match it with the clear colour of the camera
+	float4 fogColour = {0.8f, 1.0f, 0.9f, 1.0f};
+
+
+	// The intensity of our light is how similar the angle between the normal and the light direction are
+	// We can't have negative light, so we ensure this stays above 0
+	// Our normal may not be a unit vector after interpolation so we also normalize it
+	float diffuse = max(0, dot(normalize(input.normal), lightDirection));
+
+	// Sample texture colour for interpolated UV coordinate
+	float4 textureColour = meshTexture.Sample(samplerType, input.uv);
+
+	// Saturate is basically a clamp that keeps values between 0 and 1
+	float4 finalColour = saturate(textureColour * (diffuse + ambient));
+	
+	// Hard-coded linear fog (we'll pass this in from our engine later in the semester)
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/bb173401(v=vs.85).aspx
+
+	float fogStart = 10.0f;
+	float fogEnd = 500.0f;
+    float fogFactor = saturate((fogEnd - input.depth) / (fogEnd - fogStart));
+
+	return fogFactor * finalColour + (1.0 - fogFactor) * fogColour;
+
+}

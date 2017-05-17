@@ -1,0 +1,11 @@
+struct PixelInput
+{
+	float4 position : SV_POSITION;
+	float4 colour : COLOR;
+};
+
+float4 main(PixelInput input) : SV_TARGET
+{
+	// Saturate is basically a clamp that keeps values between 0 and 1
+	return saturate(input.colour);
+}

@@ -1,0 +1,17 @@
+Texture2D meshTexture;
+SamplerState samplerType;
+
+struct PixelInput
+{
+	float4 position : SV_POSITION;
+	float2 uv : TEXCOORD;
+};
+
+float4 main(PixelInput input) : SV_TARGET
+{
+	// Sample texture colour for interpolated UV coordinate
+	float4 textureColour = meshTexture.Sample(samplerType, input.uv);
+
+	// Saturate is basically a clamp that keeps values between 0 and 1
+	return saturate(textureColour);
+}
