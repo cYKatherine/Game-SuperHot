@@ -39,7 +39,7 @@ private:
 	enum class GameStates
 	{
 		MENU_STATE,
-                MODE_MENU_STATE,
+		MODE_MENU_STATE,
 		GAMEPLAY_STATE,
 		PAUSE_STATE,
 		STATE_COUNT
@@ -65,8 +65,8 @@ private:
 
 	Button* m_startButton;
 	Button* m_quitButton;
-        Button* m_storyModeButton;
-        Button* m_competitiveModeButton;
+	Button* m_storyModeButton;
+	Button* m_competitiveModeButton;
 
 	// Shaders
 	Shader* m_unlitVertexColouredShader;
@@ -108,7 +108,7 @@ private:
 	void InitUI();
 	void DrawUI();
 	void DrawMenuUI();
-        void DrawModeMenuUI();
+	void DrawModeMenuUI();
 	void DrawGameUI();
 	void DrawPauseUI();
 	void BeginUI();
@@ -120,8 +120,8 @@ private:
 	void Menu_OnUpdate(float timestep);
 	void Menu_OnRender();
 	void Menu_OnExit();
-
-        void Mode_Menu_OnEnter();
+	
+	void Mode_Menu_OnEnter();
 	void Mode_Menu_OnUpdate(float timestep);
 	void Mode_Menu_OnRender();
 	void Mode_Menu_OnExit();
