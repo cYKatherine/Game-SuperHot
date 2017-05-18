@@ -32,13 +32,15 @@ Game::Game()
 	m_stateMachine = NULL;
 	m_startButton = NULL;
 	m_quitButton = NULL;
+	m_storyModeButton = NULL;
+	m_competitiveModeButton = NULL;
 }
 
 Game::~Game() {}
 
 bool Game::Initialise(Direct3D* renderer, InputController* input)
 {
-	m_renderer = renderer;	
+	m_renderer = renderer;
 	m_input = input;
 	m_meshManager = new MeshManager();
 	m_textureManager = new TextureManager();
@@ -63,7 +65,6 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 	InitStates();
 
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets);
-
 
 	return true;
 }
@@ -155,13 +156,25 @@ void Game::InitUI()
 	m_startButton = new Button(128, 64, buttonTexture, L"Start Game", Vector2(574, 385), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Transition into the Gameplay state (these buttons are only used on the menu screen)
-		m_stateMachine->ChangeState(GameStates::GAMEPLAY_STATE);
+		m_stateMachine->ChangeState(GameStates::MODE_MENU_STATE);
 	});
 
 	m_quitButton = new Button(128, 64, buttonTexture, L"Quit", Vector2(706, 385), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Tell windows to send a WM_QUIT message into our message pump
 		PostQuitMessage(0);
+	});
+
+	m_storyModeButton = new Button(128, 64, buttonTexture, L"Story Mode", Vector2(574, 385), m_spriteBatch, m_arialFont12, m_input, [this]
+	{
+		// Transition into the Gameplay state (these buttons are only used on the menu screen)
+		m_stateMachine->ChangeState(GameStates::GAMEPLAY_STATE);
+	});
+
+	m_competitiveModeButton = new Button(128, 64, buttonTexture, L"Competitive Mode", Vector2(706, 385), m_spriteBatch, m_arialFont12, m_input, [this]
+	{
+		// Tell windows to send a WM_QUIT message into our message pump
+		m_stateMachine->ChangeState(GameStates::GAMEPLAY_STATE);
 	});
 }
 
@@ -206,7 +219,7 @@ void Game::InitAmmunitions()
 	Ammunition* ammunition = new Ammunition(m_meshManager->GetMesh("Assets/Meshes/ammoBlock.obj"),
 		m_diffuseTexturedFogShader,
 		position);
-	
+
 	m_ammunitions.push_back(ammunition);
 	m_gameObjects.push_back(ammunition);
 }
@@ -251,6 +264,9 @@ void Game::InitStates()
 	m_stateMachine->RegisterState(GameStates::MENU_STATE, &Game::Menu_OnEnter,
 		&Game::Menu_OnUpdate, &Game::Menu_OnRender, &Game::Menu_OnExit);
 
+	m_stateMachine->RegisterState(GameStates::MODE_MENU_STATE, &Game::Mode_Menu_OnEnter,
+		&Game::Mode_Menu_OnUpdate, &Game::Mode_Menu_OnRender, &Game::Mode_Menu_OnExit);
+
 	m_stateMachine->RegisterState(GameStates::GAMEPLAY_STATE, &Game::Gameplay_OnEnter,
 		&Game::Gameplay_OnUpdate, &Game::Gameplay_OnRender, &Game::Gameplay_OnExit);
 
@@ -288,12 +304,12 @@ void Game::Render()
 
 	m_stateMachine->Render();
 
-	m_renderer->EndScene();		
+	m_renderer->EndScene();
 }
 
 void Game::DrawUI()
 {
-	// Sprites don't use a shader 
+	// Sprites don't use a shader
 	m_renderer->SetCurrentShader(NULL);
 
 	CommonStates states(m_renderer->GetDevice());
@@ -306,12 +322,12 @@ void Game::DrawUI()
 	m_arialFont18->DrawString(m_spriteBatch, ammunitionString.c_str(), Vector2(20, 140), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 	m_arialFont18->DrawString(m_spriteBatch, rubyString.c_str(), Vector2(20, 120), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
-	
+
 	// Here's how we draw a sprite over our game (caching it in m_currentItemSprite so we don't have to find it every frame)
 	m_spriteBatch->Draw(m_healthBarSprite->GetShaderResourceView(), m_healthBarRect, Color(1.0f, 1.0f, 1.0f));
 	m_spriteBatch->Draw(m_hurtOverlaySprite->GetShaderResourceView(), Vector2(20, 20), *m_hurtOverlayColor);
 	//m_spriteBatch->Draw(m_currentItemSprite->GetShaderResourceView(), Vector2(20, 20), Color(1.0f, 1.0f, 1.0f));
-	
+
 	m_spriteBatch->End();
 }
 
@@ -419,6 +435,28 @@ void Game::Menu_OnRender()
 void Game::Menu_OnExit()
 {
 	OutputDebugString("Menu OnExit\n");
+}
+
+void Game::Mode_Menu_OnEnter()
+{
+	OutputDebugString("Mode Menu OnEnter\n");
+}
+
+void Game::Mode_Menu_OnUpdate(float timestep)
+{
+	// Button's need to update so they can check if the mouse is over them (they swap to a hover section of the image)
+	m_storyModeButton->Update();
+	m_competitiveModeButton->Update();
+}
+
+void Game::Mode_Menu_OnRender()
+{
+        DrawModeMenuUI();
+}
+
+void Game::Mode_Menu_OnExit()
+{
+	OutputDebugString("Mode Menu OnExit\n");
 }
 
 void Game::Gameplay_OnEnter()
@@ -538,6 +576,18 @@ void Game::DrawMenuUI()
 
 	m_startButton->Render();
 	m_quitButton->Render();
+
+	m_arialFont18->DrawString(m_spriteBatch, L"FIT2096 Week 9", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+
+	EndUI();
+}
+
+void Game::DrawModeMenuUI()
+{
+	BeginUI();
+
+	m_storyModeButton->Render();
+	m_competitiveModeButton->Render();
 
 	m_arialFont18->DrawString(m_spriteBatch, L"FIT2096 Week 9", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
