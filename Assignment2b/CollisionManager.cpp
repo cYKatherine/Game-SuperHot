@@ -1,12 +1,13 @@
 #include "CollisionManager.h"
 
-CollisionManager::CollisionManager(std::vector<Player*>* players, std::vector<Ammunition*>* ammunitions, std::vector<Ruby*>* rubies, std::vector<Enemy*>* enemies, std::vector<Bullet*>* bullets)
+CollisionManager::CollisionManager(std::vector<Player*>* players, std::vector<Ammunition*>* ammunitions, std::vector<Ruby*>* rubies, std::vector<Enemy*>* enemies, std::vector<Bullet*>* bullets, std::vector<ItemBox*>* itemBoxes)
 {
 	m_players = players;
 	m_ammunitions = ammunitions;
 	m_rubies = rubies;
 	m_enemies = enemies;
 	m_bullets = bullets;
+	m_itemBoxes = itemBoxes;
 
 	// Clear our arrays to 0 (NULL)
 	memset(m_currentCollisions, 0, sizeof(m_currentCollisions));
@@ -25,6 +26,7 @@ void CollisionManager::CheckCollisions()
 	EnemyToPlayer();
 	BulletToPlayer();
 	BulletToEnemy();
+	PlayerToItemBox();
 
 	// Move all current collisions into previous
 	memcpy(m_previousCollisions, m_currentCollisions, sizeof(m_currentCollisions));
@@ -63,6 +65,61 @@ void CollisionManager::AddCollision(GameObject* first, GameObject* second)
 	m_currentCollisions[m_nextCurrentCollisionSlot + 1] = second;
 	
 	m_nextCurrentCollisionSlot += 2;
+}
+
+void CollisionManager::PlayerToItemBox()
+{
+	// We'll check each Player against every item box
+	// Note this is not overly efficient, both in readability and runtime performance
+
+	for (unsigned int i = 0; i < m_players->size(); i++)
+	{
+		for (unsigned int j = 0; j < m_itemBoxes->size(); j++)
+		{
+			// Don't need to store pointer to these objects again but favouring clarity
+			// Can't index into these directly as they're a pointer to a vector. We need to dereference them first
+			Player* player = (*m_players)[i];
+			ItemBox* itemBox = (*m_itemBoxes)[j];
+
+			CBoundingBox playerBounds = player->GetBounds();
+			CBoundingBox itemBoxBounds = itemBox->GetBounds();
+
+			// Are they colliding this frame?
+			bool isColliding = CheckCollision(playerBounds, itemBoxBounds);
+
+			// Were they colliding last frame?
+			bool wasColliding = ArrayContainsCollision(m_previousCollisions, player, itemBox);
+
+			if (isColliding)
+			{
+				// Register the collision
+				AddCollision(player, itemBox);
+
+				if (wasColliding)
+				{
+					// We are colliding this frame and we were also colliding last frame - that's a collision stay
+					// Tell the item box a Player has collided with it (we could pass it the actual Player too if we like)
+					itemBox->OnPlayerCollisionStay();
+					player->OnItemBoxCollisionStay();
+				}
+				else
+				{
+					// We are colliding this frame and we weren't last frame - that's a collision enter
+					itemBox->OnPlayerCollisionEnter();
+					player->OnItemBoxCollisionEnter(itemBox);
+				}
+			}
+			else
+			{
+				if (wasColliding)
+				{
+					// We aren't colliding this frame but we were last frame - that's a collision exit
+					itemBox->OnPlayerCollisionExit();
+					player->OnItemBoxCollisionExit();
+				}
+			}
+		}
+	}
 }
 
 void CollisionManager::PlayerToAmmunition()

@@ -8,7 +8,7 @@ Player::Player(Camera* cam, InputController* input) {
 	m_camera = cam;
 	m_input = input;
 
-	m_moveSpeed = 3.0f;
+	m_moveSpeed = 5.0f;
 	m_rotationSpeed = 1.0f;
 	m_cameraHeight = 1.8f;
 	m_lookAtXRotation = 0;
@@ -138,6 +138,23 @@ void Player::OnPlayerCollisionStay(Player* other)
 }
 
 void Player::OnPlayerCollisionExit(Player* other)
+{
+}
+
+void Player::OnItemBoxCollisionEnter(ItemBox* itemBox)
+{
+	// Bounce off box - how could you take our velocity into account?
+	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
+	m_health += 100;
+	Game::GetInstance()->RefreshUI();
+
+}
+
+void Player::OnItemBoxCollisionStay()
+{
+}
+
+void Player::OnItemBoxCollisionExit()
 {
 }
 

@@ -6,6 +6,8 @@
 class ItemBox : public GameObject
 {
 private:
+	int respawnCount = 0;
+
 	CBoundingBox m_boundingBox;
 
 public:
