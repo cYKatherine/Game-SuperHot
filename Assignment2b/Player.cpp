@@ -141,6 +141,23 @@ void Player::OnPlayerCollisionExit(Player* other)
 {
 }
 
+void Player::OnItemBoxCollisionEnter(ItemBox* itemBox)
+{
+	// Bounce off box - how could you take our velocity into account?
+	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
+	m_health += 100;
+	Game::GetInstance()->RefreshUI();
+
+}
+
+void Player::OnItemBoxCollisionStay()
+{
+}
+
+void Player::OnItemBoxCollisionExit()
+{
+}
+
 void Player::OnAmmunitionCollisionEnter(Ammunition* ammunition)
 {
 	// Bounce off box - how could you take our velocity into account?

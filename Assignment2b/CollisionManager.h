@@ -8,6 +8,7 @@
 #include "Ruby.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "ItemBox.h"
 
 #define MAX_ALLOWED_COLLISIONS 2048
 
@@ -19,6 +20,7 @@ private:
 	std::vector<Ruby*>* m_rubies;
 	std::vector<Enemy*>* m_enemies;
 	std::vector<Bullet*>* m_bullets;
+	std::vector<ItemBox*>* m_itemBoxes;
 
 	GameObject* m_currentCollisions[MAX_ALLOWED_COLLISIONS];
 
@@ -41,9 +43,11 @@ private:
 	void EnemyToPlayer();
 	void BulletToPlayer();
 	void BulletToEnemy();
+	void PlayerToItemBox();
+
 
 public:
-	CollisionManager(std::vector<Player*>* players, std::vector<Ammunition*>* ammunitions, std::vector<Ruby*>* rubies, std::vector<Enemy*>* enemies, std::vector<Bullet*>* bullets);
+	CollisionManager(std::vector<Player*>* players, std::vector<Ammunition*>* ammunitions, std::vector<Ruby*>* rubies, std::vector<Enemy*>* enemies, std::vector<Bullet*>* bullets, std::vector<ItemBox*>* itemBoxes);
 	void CheckCollisions();
 
 };

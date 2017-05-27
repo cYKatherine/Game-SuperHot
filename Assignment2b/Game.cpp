@@ -62,7 +62,7 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 	RefreshUI();
 	InitStates();
 
-	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets);
+	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets, &m_itemBoxes);
 
 
 	return true;
@@ -257,6 +257,7 @@ void Game::InitItemBoxes()
 		m_textureManager->GetTexture("Assets/Textures/item_box.png"),
 		position);
 
+	m_itemBoxes.push_back(itemBox);
 	m_gameObjects.push_back(itemBox);
 }
 

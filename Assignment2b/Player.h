@@ -7,6 +7,7 @@
 #include "MathsHelper.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "ItemBox.h"
 
 #include <iostream>
 
@@ -54,6 +55,10 @@ public:
 	void OnAmmunitionCollisionEnter(Ammunition* ammunition);
 	void OnAmmunitionCollisionStay();
 	void OnAmmunitionCollisionExit();
+
+	void OnItemBoxCollisionEnter(ItemBox* itemBox);
+	void OnItemBoxCollisionStay();
+	void OnItemBoxCollisionExit();
 
 	void OnRubyCollisionEnter(Ruby* other);
 	void OnRubyCollisionStay(Ruby* other);
