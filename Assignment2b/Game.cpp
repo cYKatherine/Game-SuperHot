@@ -253,11 +253,10 @@ void Game::InitItemBoxes()
 	Vector3 position = Vector3(MathsHelper::RandomRange(-50.0f, 50.0f), 0.0f, MathsHelper::RandomRange(-50.0f, 50.0f));
 
 	ItemBox* itemBox = new ItemBox(m_meshManager->GetMesh("Assets/Meshes/item_box.obj"),
-		m_diffuseTexturedFogShader,
+		m_diffuseTexturedFogShader, 
 		m_textureManager->GetTexture("Assets/Textures/item_box.png"),
 		position);
 
-	m_itemBoxes.push_back(itemBox);
 	m_gameObjects.push_back(itemBox);
 }
 
