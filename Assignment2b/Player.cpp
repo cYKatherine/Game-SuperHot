@@ -8,7 +8,7 @@ Player::Player(Camera* cam, InputController* input) {
 	m_camera = cam;
 	m_input = input;
 
-	m_moveSpeed = 3.0f;
+	m_moveSpeed = 5.0f;
 	m_rotationSpeed = 1.0f;
 	m_cameraHeight = 1.8f;
 	m_lookAtXRotation = 0;

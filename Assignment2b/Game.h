@@ -23,6 +23,7 @@
 #include "Bullet.h"
 #include "StateMachine.h"
 #include "Button.h"
+#include "ItemBox.h"
 
 
 #include "DirectXTK/SpriteBatch.h"
@@ -82,6 +83,7 @@ private:
 	std::vector<Ruby*> m_rubies;
 	std::vector<Enemy*> m_enemies;
 	std::vector<Bullet*> m_bullets;
+	std::vector<ItemBox*> m_itemBoxes;
 
 	RECT m_healthBarRect;
 	Texture* m_hurtOverlaySprite;
@@ -101,6 +103,7 @@ private:
 	void InitRubies();
 	void InitEnemies();
 	void InitStates();
+	void InitItemBoxes();
 
 	void InitUI();
 	void DrawUI();

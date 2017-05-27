@@ -102,6 +102,10 @@ bool Game::LoadMeshes()
 		return false;
 	if (!m_meshManager->Load(m_renderer, "Assets/Meshes/ruby.obj"))
 		return false;
+	if (!m_meshManager->Load(m_renderer, "Assets/Meshes/item_box.obj"))
+		return false;
+	if (!m_meshManager->Load(m_renderer, "Assets/Meshes/rumble_strip.obj"))
+		return false;
 
 	return true;
 }
@@ -128,6 +132,8 @@ bool Game::LoadTextures()
 	if (!m_textureManager->Load(m_renderer, "Assets/Textures/sprite_hurtOverlay.png"))
 		return false;
 	if (!m_textureManager->Load(m_renderer, "Assets/Textures/button.png"))
+		return false;
+	if (!m_textureManager->Load(m_renderer, "Assets/Textures/item_box.png"))
 		return false;
 
 	return true;
@@ -183,6 +189,7 @@ void Game::InitGameWorld()
 	InitAmmunitions();
 	InitRubies();
 	InitEnemies();
+	InitItemBoxes();
 
 	// Static scenery objects
 	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
@@ -239,6 +246,19 @@ void Game::InitEnemies() {
 		m_enemies.push_back(enemy);
 		m_gameObjects.push_back(enemy);
 	}
+}
+
+void Game::InitItemBoxes()
+{
+	Vector3 position = Vector3(MathsHelper::RandomRange(-50.0f, 50.0f), 0.0f, MathsHelper::RandomRange(-50.0f, 50.0f));
+
+	ItemBox* itemBox = new ItemBox(m_meshManager->GetMesh("Assets/Meshes/item_box.obj"),
+		m_diffuseTexturedFogShader,
+		m_textureManager->GetTexture("Assets/Textures/item_box.png"),
+		position);
+
+	m_itemBoxes.push_back(itemBox);
+	m_gameObjects.push_back(itemBox);
 }
 
 void Game::InitStates()
