@@ -4,11 +4,12 @@
 #include "Ammunition.h"
 
 
-Player::Player(Camera* cam, InputController* input) {
+Player::Player(Camera* cam, InputController* input, AudioSystem* audio) {
 	m_camera = cam;
 	m_input = input;
+	m_audio = audio;
 
-	m_moveSpeed = 5.0f;
+	m_moveSpeed = 8.0f;
 	m_rotationSpeed = 1.0f;
 	m_cameraHeight = 1.8f;
 	m_lookAtXRotation = 0;
@@ -97,6 +98,7 @@ void Player::Update(float timestep)
 			m_fireCoolDown = 0;
 			m_lastTimeShoot = 0;
 			m_bulletNo -= 1;
+			m_audio->Play("Assets/Sounds/Shoot.wav", true);
 			Game::GetInstance()->RefreshAmmunicationUI();
 		}
 	}

@@ -26,6 +26,7 @@ private:
 	Direct3D* m_renderer;	//The direct3D renderer class that we wrote, this will be used to set the background colour for our window.
 	InputController* m_input;//The Input Controller is declared here. It will use the Window Proc to update it's state
 	Game* m_game;			//This is our Game object. Here we create, update and render all of our game objects/models
+	AudioSystem* m_audio;
 
 	//These values are used to calculate the timestep, or the amount of time that has passed since the last frame
 	//The timestep means that we calculate movement/animation in real time and not frame by frame

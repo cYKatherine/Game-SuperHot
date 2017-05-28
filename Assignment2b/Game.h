@@ -10,6 +10,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "AudioSystem.h"
 #include "Ammunition.h"
 #include "Direct3D.h"
 #include "Camera.h"
@@ -58,6 +59,7 @@ private:
 	MeshManager* m_meshManager;
 	TextureManager* m_textureManager;
 	CollisionManager* m_collisionManager;
+	AudioSystem* m_audio;
 
 	bool m_move = false;
 	bool m_firstTimeInit = true;
@@ -100,6 +102,7 @@ private:
 
 	// Initialisation Helpers
 	bool InitShaders();
+	bool LoadAudio();
 	bool LoadMeshes();
 	bool LoadTextures();
 	void LoadFonts();
@@ -160,7 +163,7 @@ public:
 	//Game();	
 	~Game();
 
-	bool Initialise(Direct3D* renderer, InputController* input); //The initialise method will load all of the content for the game (meshes, textures, etc.)
+	bool Initialise(Direct3D* renderer, AudioSystem* audio, InputController* input); //The initialise method will load all of the content for the game (meshes, textures, etc.)
 
 	void Update(float timestep);	//The overall Update method for the game. All gameplay logic will be done somewhere within this method
 	void Render();					//The overall Render method for the game. Here all of the meshes that need to be drawn will be drawn

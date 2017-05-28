@@ -18,6 +18,7 @@ Game* Game::m_pInstance = NULL;
 
 Game::Game()
 {
+	m_audio = NULL;
 	m_renderer = NULL;
 	m_currentCam = NULL;
 	m_input = NULL;
@@ -38,13 +39,15 @@ Game::Game()
 
 Game::~Game() {}
 
-bool Game::Initialise(Direct3D* renderer, InputController* input)
+bool Game::Initialise(Direct3D* renderer, AudioSystem* audio, InputController* input)
 {
 	m_renderer = renderer;
 	m_input = input;
+	m_audio = audio;
 	m_meshManager = new MeshManager();
 	m_textureManager = new TextureManager();
 	m_currentCam = new Camera();
+
 
 	m_healthBarRect = { 0, 0, 0, 0 };
 	m_hurtOverlayColor = NULL;
@@ -58,12 +61,29 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 	if (!LoadTextures())
 		return false;
 
+	if (!LoadAudio())
+		return false;
+
 	LoadFonts();
 	InitUI();
 	InitStates();
 
-
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets, &m_itemBoxes);
+
+	return true;
+}
+
+
+bool Game::LoadAudio()
+{
+	if (!m_audio->Load("Assets/Sounds/Shoot.wav"))
+		return false;
+
+	if (!m_audio->Load("Assets/Sounds/Torture.wav"))
+		return false;
+
+	if (!m_audio->Load("Assets/Sounds/Yes.wav"))
+		return false;
 
 	return true;
 }
@@ -224,7 +244,7 @@ void Game::InitGameWorld()
 
 void Game::InitPlayers()
 {
-	m_player = new Player(m_currentCam, m_input);
+	m_player = new Player(m_currentCam, m_input, m_audio);
 
 	m_gameObjects.push_back(m_player);
 	m_players.push_back(m_player);
