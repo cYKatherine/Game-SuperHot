@@ -145,6 +145,7 @@ void Player::OnPlayerCollisionExit(Player* other)
 
 void Player::OnItemBoxCollisionEnter(ItemBox* itemBox)
 {
+	m_audio->Play("Assets/Sounds/beep.mp3", false);
 	// Bounce off box - how could you take our velocity into account?
 	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
 	m_health += 100;
@@ -162,6 +163,7 @@ void Player::OnItemBoxCollisionExit()
 
 void Player::OnAmmunitionCollisionEnter(Ammunition* ammunition)
 {
+	m_audio->Play("Assets/Sounds/beep.mp3", false);
 	// Bounce off box - how could you take our velocity into account?
 	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
 	if (m_ammunitionNo < 2) {
@@ -180,6 +182,7 @@ void Player::OnAmmunitionCollisionExit()
 
 void Player::OnRubyCollisionEnter(Ruby* other)
 {
+	m_audio->Play("Assets/Sounds/beep.mp3", false);
 }
 
 void Player::OnRubyCollisionStay(Ruby* other)

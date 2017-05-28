@@ -1,10 +1,11 @@
 #include "Ammunition.h"
 #include "MathsHelper.h"
 
-Ammunition::Ammunition(Mesh* mesh, Shader* shader, Vector3 position) :
+Ammunition::Ammunition(Mesh* mesh, Shader* shader, Vector3 position, AudioSystem* audio) :
 	GameObject(mesh, shader, position)
 {
 	m_boundingBox = CBoundingBox(m_position + m_mesh->GetMin(), m_position + m_mesh->GetMax());
+	m_audio = audio;
 }
 
 void Ammunition::Update(float timestep)
@@ -19,6 +20,12 @@ void Ammunition::Update(float timestep)
 		m_scaleZ += 0.1;
 	}
 	if (respawnCount >= 1000) {
+		if(!m_played)
+		{
+			m_audio->Play("Assets/Sounds/beep.mp3", false);
+			m_audio->Play("Assets/Sounds/beep.mp3", false);
+			m_played = true;
+		}
 		respawn();
 	}
 	respawnCount += 1;
@@ -35,6 +42,7 @@ void Ammunition::respawn() {
 	else {
 		m_position = Vector3(MathsHelper::RandomRange(-50.0f, 50.0f), 0.0f, MathsHelper::RandomRange(-50.0f, 50.0f));
 		respawnCount = 0;
+		m_played = false;
 	}
 }
 
