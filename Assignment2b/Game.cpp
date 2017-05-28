@@ -792,7 +792,7 @@ void Game::DrawModeMenuUI()
 	m_storyModeButton->Render();
 	m_competitiveModeButton->Render();
 
-	m_arialFont18->DrawString(m_spriteBatch, L"FIT2096 Week 9", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Assignment2B", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }
