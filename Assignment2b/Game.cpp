@@ -60,9 +60,8 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 
 	LoadFonts();
 	InitUI();
-	InitGameWorld();
-	RefreshUI();
 	InitStates();
+
 
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets, &m_itemBoxes);
 
@@ -174,40 +173,52 @@ void Game::InitUI()
 	m_storyModeButton = new Button(128, 64, buttonTexture, L"Story Mode", Vector2(574, 385), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Transition into the Gameplay state (these buttons are only used on the menu screen)
-		m_stateMachine->ChangeState(GameStates::GAMEPLAY_STATE);
+		m_stateMachine->ChangeState(GameStates::STORYMODE_STATE);
 	});
 
 	m_competitiveModeButton = new Button(128, 64, buttonTexture, L"Competitive Mode", Vector2(706, 385), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Tell windows to send a WM_QUIT message into our message pump
-		m_stateMachine->ChangeState(GameStates::GAMEPLAY_STATE);
+		m_stateMachine->ChangeState(GameStates::COMPETITIVEMODE_STATE);
 	});
 }
 
-void Game::RefreshUI()
+void Game::RefreshHealthUI()
 {
-	// Ensure text in UI matches latest scores etc (call this after data changes)
+	m_healthBarRect.right = 20 + m_player->getHealth() * 1.5;
+}
+
+void Game::RefreshAmmunicationUI()
+{
 	std::wstringstream ss, sss;
 	ss << "Ammunition No: " << m_player->getAmmunitionNo() << " Bullet No: " << m_player->getBulletNo();
 	ammunitionString = ss.str();
+}
+
+void Game::RefreshStoryModeUI()
+{
+	// Ensure text in UI matches latest scores etc (call this after data changes)
+	RefreshAmmunicationUI();
+	RefreshHealthUI();
+
+	std::wstringstream sss;
 	sss << "Ruby Left: " << m_rubies.size();
 	rubyString = sss.str();
-	m_healthBarRect.right = 20 + m_player->getHealth() * 1.5;
+}
 
+void Game::RefreshCompetitiveModeUI()
+{
+	// Ensure text in UI matches latest scores etc (call this after data changes)
+	RefreshAmmunicationUI();
+	RefreshHealthUI();
 }
 
 void Game::InitGameWorld()
 {
-	InitPlayers();
-	InitAmmunitions();
-	InitRubies();
-	InitEnemies();
-	InitItemBoxes();
+
+	//InitItemBoxes();
 
 	// Static scenery objects
-	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
-		m_diffuseTexturedFogShader,
-		m_textureManager->GetTexture("Assets/Textures/ground.png")));
 
 }
 
@@ -287,11 +298,17 @@ void Game::InitStates()
 	m_stateMachine->RegisterState(GameStates::MODE_MENU_STATE, &Game::Mode_Menu_OnEnter,
 		&Game::Mode_Menu_OnUpdate, &Game::Mode_Menu_OnRender, &Game::Mode_Menu_OnExit);
 
-	m_stateMachine->RegisterState(GameStates::GAMEPLAY_STATE, &Game::Gameplay_OnEnter,
-		&Game::Gameplay_OnUpdate, &Game::Gameplay_OnRender, &Game::Gameplay_OnExit);
+	m_stateMachine->RegisterState(GameStates::STORYMODE_STATE, &Game::Story_Mode_OnEnter,
+		&Game::Story_Mode_OnUpdate, &Game::Story_Mode_OnRender, &Game::Story_Mode_OnExit);
 
-	m_stateMachine->RegisterState(GameStates::PAUSE_STATE, &Game::Pause_OnEnter,
-		&Game::Pause_OnUpdate, &Game::Pause_OnRender, &Game::Pause_OnExit);
+	m_stateMachine->RegisterState(GameStates::COMPETITIVEMODE_STATE, &Game::Competitive_Mode_OnEnter,
+		&Game::Competitive_Mode_OnUpdate, &Game::Competitive_Mode_OnRender, &Game::Competitive_Mode_OnExit);
+
+	m_stateMachine->RegisterState(GameStates::STORYMODE_PAUSE_STATE, &Game::Story_Mode_Pause_OnEnter,
+		&Game::Story_Mode_Pause_OnUpdate, &Game::Story_Mode_Pause_OnRender, &Game::Story_Mode_Pause_OnExit);
+
+	m_stateMachine->RegisterState(GameStates::COMPETITIVEMODE_PAUSE_STATE, &Game::Competitive_Mode_Pause_OnEnter,
+		&Game::Competitive_Mode_Pause_OnUpdate, &Game::Competitive_Mode_Pause_OnRender, &Game::Competitive_Mode_Pause_OnExit);
 }
 
 void Game::createBullet(Vector3 position, float rotationY, bool fromPlayer) {
@@ -479,12 +496,28 @@ void Game::Mode_Menu_OnExit()
 	OutputDebugString("Mode Menu OnExit\n");
 }
 
-void Game::Gameplay_OnEnter()
+void Game::Story_Mode_OnEnter()
 {
+	if (m_firstTimeInit) 
+	{
+		InitPlayers();
+		InitAmmunitions();
+		InitRubies();
+		InitEnemies();
+
+		m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
+			m_diffuseTexturedFogShader,
+			m_textureManager->GetTexture("Assets/Textures/ground.png")));
+
+		RefreshStoryModeUI();
+
+		m_firstTimeInit = false;
+	}
+	
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
-void Game::Gameplay_OnUpdate(float timestep)
+void Game::Story_Mode_OnUpdate(float timestep)
 {
 	// Update all our gameobjects. What they really are doesn't matter
 	if (m_input->GetKeyDown(VK_ESCAPE))
@@ -500,7 +533,7 @@ void Game::Gameplay_OnUpdate(float timestep)
 	for (unsigned int i = 0; i < m_rubies.size(); i++) {
 		if (m_rubies[i]->getPicked()) {
 			m_rubies.erase(m_rubies.begin() + i);
-			RefreshUI();
+			RefreshStoryModeUI();
 		}
 	}
 
@@ -524,7 +557,7 @@ void Game::Gameplay_OnUpdate(float timestep)
 
 	if (m_hurtOverlayColor->A() != 0) {
 		m_hurtOverlayColor->A(m_hurtOverlayColor->A() - 0.1);
-		RefreshUI();
+		RefreshStoryModeUI();
 	}
 
 	m_collisionManager->CheckCollisions();
@@ -534,11 +567,11 @@ void Game::Gameplay_OnUpdate(float timestep)
 	// Should we pause
 	if (m_input->GetKeyDown('P'))
 	{
-		m_stateMachine->ChangeState(GameStates::PAUSE_STATE);
+		m_stateMachine->ChangeState(GameStates::STORYMODE_PAUSE_STATE);
 	}
 }
 
-void Game::Gameplay_OnRender()
+void Game::Story_Mode_OnRender()
 {
 	// Draw our gameobjects
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
@@ -557,35 +590,149 @@ void Game::Gameplay_OnRender()
 	DrawUI();
 }
 
-void Game::Gameplay_OnExit()
+void Game::Story_Mode_OnExit()
 {
 	OutputDebugString("GamePlay OnExit\n");
 }
 
-void Game::Pause_OnEnter()
+void Game::Competitive_Mode_OnEnter()
 {
+	if (m_firstTimeInit)
+	{
+		InitPlayers();
+		InitAmmunitions();
+		InitRubies();
+		InitEnemies();
+		InitItemBoxes();
+
+		m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
+			m_diffuseTexturedFogShader,
+			m_textureManager->GetTexture("Assets/Textures/ground.png")));
+
+		RefreshCompetitiveModeUI();
+
+		m_firstTimeInit = false;
+	}
+
+	OutputDebugString("GamePlay OnEnter\n");
+}
+
+void Game::Competitive_Mode_OnUpdate(float timestep)
+{
+	// Update all our gameobjects. What they really are doesn't matter
+	if (m_input->GetKeyDown(VK_ESCAPE))
+	{
+		PostQuitMessage(0);
+	}
+
+	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	{
+		m_gameObjects[i]->Update(timestep);
+	}
+
+	for (unsigned int i = 0; i < m_bullets.size(); i++) {
+		if (m_bullets[i]->getDisappear()) {
+			m_bullets.erase(m_bullets.begin() + i);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_bullets.size(); i++) {
+		m_bullets[i]->Update(timestep);
+	}
+
+	for (unsigned int i = 0; i < m_enemies.size(); i++) {
+		m_enemies[i]->updateRubies(m_rubies);
+	}
+
+	if (m_hurtOverlayColor->A() != 0) {
+		m_hurtOverlayColor->A(m_hurtOverlayColor->A() - 0.1);
+		RefreshCompetitiveModeUI();
+	}
+
+	m_collisionManager->CheckCollisions();
+
+	m_currentCam->Update(timestep);
+
+	// Should we pause
+	if (m_input->GetKeyDown('P'))
+	{
+		m_stateMachine->ChangeState(GameStates::COMPETITIVEMODE_PAUSE_STATE);
+	}
+}
+
+void Game::Competitive_Mode_OnRender()
+{
+	// Draw our gameobjects
+	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
+	{
+		m_gameObjects[i]->Render(m_renderer, m_currentCam);
+	}
+
+	for (unsigned int i = 0; i < m_bullets.size(); i++) {
+		m_bullets[i]->Render(m_renderer, m_currentCam);
+	}
+
+	DrawUI();
+}
+
+void Game::Competitive_Mode_OnExit()
+{
+	OutputDebugString("GamePlay OnExit\n");
+}
+
+void Game::Story_Mode_Pause_OnEnter()
+{
+
 	OutputDebugString("Pause OnEnter\n");
 }
 
-void Game::Pause_OnUpdate(float timestep)
+void Game::Story_Mode_Pause_OnUpdate(float timestep)
 {
 	// Check if we should exit pause
 	if (m_input->GetKeyDown('P'))
 	{
-		m_stateMachine->ChangeState(GameStates::GAMEPLAY_STATE);
+		m_stateMachine->ChangeState(GameStates::STORYMODE_STATE);
 	}
 }
 
-void Game::Pause_OnRender()
+void Game::Story_Mode_Pause_OnRender()
 {
 	// Keep drawing the game when paused (it's not being updated though which is what freezes it)
-	Gameplay_OnRender();
+	Story_Mode_OnRender();
 
 	// In addition to the game, draw some UI to say we're paused
 	DrawPauseUI();
 }
 
-void Game::Pause_OnExit()
+void Game::Story_Mode_Pause_OnExit()
+{
+	OutputDebugString("Pause OnExit\n");
+}
+
+void Game::Competitive_Mode_Pause_OnEnter()
+{
+	OutputDebugString("Pause OnEnter\n");
+}
+
+void Game::Competitive_Mode_Pause_OnUpdate(float timestep)
+{
+	// Check if we should exit pause
+	if (m_input->GetKeyDown('P'))
+	{
+		m_stateMachine->ChangeState(GameStates::COMPETITIVEMODE_STATE);
+	}
+}
+
+void Game::Competitive_Mode_Pause_OnRender()
+{
+	// Keep drawing the game when paused (it's not being updated though which is what freezes it)
+	Competitive_Mode_OnRender();
+
+	// In addition to the game, draw some UI to say we're paused
+	DrawPauseUI();
+}
+
+void Game::Competitive_Mode_Pause_OnExit()
 {
 	OutputDebugString("Pause OnExit\n");
 }
@@ -597,7 +744,7 @@ void Game::DrawMenuUI()
 	m_startButton->Render();
 	m_quitButton->Render();
 
-	m_arialFont18->DrawString(m_spriteBatch, L"FIT2096 Week 9", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Assignment 2B ", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }

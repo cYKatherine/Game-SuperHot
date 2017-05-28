@@ -41,8 +41,10 @@ private:
 	{
 		MENU_STATE,
 		MODE_MENU_STATE,
-		GAMEPLAY_STATE,
-		PAUSE_STATE,
+		STORYMODE_STATE,
+		COMPETITIVEMODE_STATE,
+		STORYMODE_PAUSE_STATE,
+		COMPETITIVEMODE_PAUSE_STATE,
 		STATE_COUNT
 	};
 
@@ -58,6 +60,7 @@ private:
 	CollisionManager* m_collisionManager;
 
 	bool m_move = false;
+	bool m_firstTimeInit = true;
 
 	// Sprites / Fonts
 	SpriteBatch* m_spriteBatch;
@@ -129,15 +132,25 @@ private:
 	void Mode_Menu_OnRender();
 	void Mode_Menu_OnExit();
 
-	void Gameplay_OnEnter();
-	void Gameplay_OnUpdate(float timestep);
-	void Gameplay_OnRender();
-	void Gameplay_OnExit();
+	void Story_Mode_OnEnter();
+	void Story_Mode_OnUpdate(float timestep);
+	void Story_Mode_OnRender();
+	void Story_Mode_OnExit();
 
-	void Pause_OnEnter();
-	void Pause_OnUpdate(float timestep);
-	void Pause_OnRender();
-	void Pause_OnExit();
+	void Competitive_Mode_OnEnter();
+	void Competitive_Mode_OnUpdate(float timestep);
+	void Competitive_Mode_OnRender();
+	void Competitive_Mode_OnExit();
+
+	void Story_Mode_Pause_OnEnter();
+	void Story_Mode_Pause_OnUpdate(float timestep);
+	void Story_Mode_Pause_OnRender();
+	void Story_Mode_Pause_OnExit();
+
+	void Competitive_Mode_Pause_OnEnter();
+	void Competitive_Mode_Pause_OnUpdate(float timestep);
+	void Competitive_Mode_Pause_OnRender();
+	void Competitive_Mode_Pause_OnExit();
 
 public:
 	static Game* GetInstance() {
@@ -155,7 +168,10 @@ public:
 	void Shutdown(); //Cleanup everything we initialised
 
 	void createBullet(Vector3 position, float rotationY, bool fromPlayer);
-	void RefreshUI();
+	void RefreshStoryModeUI();
+	void RefreshCompetitiveModeUI();
+	void RefreshHealthUI();
+	void RefreshAmmunicationUI();
 	void setMove(bool move);
 	bool getMove();
 	Color* m_hurtOverlayColor;
