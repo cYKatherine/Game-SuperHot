@@ -73,7 +73,6 @@ bool Game::Initialise(Direct3D* renderer, AudioSystem* audio, InputController* i
 	return true;
 }
 
-
 bool Game::LoadAudio()
 {
 	if (!m_audio->Load("Assets/Sounds/Shoot.wav"))
@@ -225,6 +224,13 @@ void Game::RefreshAmmunicationUI()
 	ammunitionString = ss.str();
 }
 
+void Game::RefreshCompetitiveModeScoreUI()
+{
+	std::wstringstream sss;
+	sss << "Score: " << m_competitiveModeScore;
+	competitiveModeScoreString = sss.str();
+}
+
 void Game::RefreshStoryModeUI()
 {
 	// Ensure text in UI matches latest scores etc (call this after data changes)
@@ -241,10 +247,7 @@ void Game::RefreshCompetitiveModeUI()
 	// Ensure text in UI matches latest scores etc (call this after data changes)
 	RefreshAmmunicationUI();
 	RefreshHealthUI();
-
-	std::wstringstream sss;
-	sss << "Score: " << m_competitiveModeScore;
-	competitiveModeScoreString = sss.str();
+	RefreshCompetitiveModeScoreUI();
 }
 
 void Game::InitGameWorld()

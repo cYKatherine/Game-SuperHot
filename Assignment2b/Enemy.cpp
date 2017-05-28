@@ -228,6 +228,7 @@ void Enemy::OnBulletCollisionEnter(bool fromPlayer, Bullet* bullet) {
 		ApplyForce((m_position - updatePosition) * 0.5f);
 		m_health -= 10;
 		Game::GetInstance()->updateScore(10);
+		Game::GetInstance()->RefreshCompetitiveModeScoreUI();
 	}
 
 }
@@ -252,4 +253,5 @@ void Enemy::explosive()
 	ApplyForce((m_position - updatePosition) * 0.5f);
 	m_health -= 100;
 	Game::GetInstance()->updateScore(100);
+	Game::GetInstance()->RefreshCompetitiveModeScoreUI();
 }

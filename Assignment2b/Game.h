@@ -181,6 +181,7 @@ public:
 	void RefreshCompetitiveModeUI();
 	void RefreshHealthUI();
 	void RefreshAmmunicationUI();
+	void RefreshCompetitiveModeScoreUI();
 	void setMove(bool move);
 	bool getMove();
 	bool pickExplosive(Vector3 playerPosition);
