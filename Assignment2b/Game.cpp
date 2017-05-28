@@ -85,6 +85,9 @@ bool Game::LoadAudio()
 	if (!m_audio->Load("Assets/Sounds/Yes.wav"))
 		return false;
 
+	if (!m_audio->Load("Assets/Sounds/beep.mp3"))
+		return false;
+
 	return true;
 }
 
@@ -256,7 +259,7 @@ void Game::InitAmmunitions()
 
 	Ammunition* ammunition = new Ammunition(m_meshManager->GetMesh("Assets/Meshes/ammoBlock.obj"),
 		m_diffuseTexturedFogShader,
-		position);
+		position, m_audio);
 
 	m_ammunitions.push_back(ammunition);
 	m_gameObjects.push_back(ammunition);
