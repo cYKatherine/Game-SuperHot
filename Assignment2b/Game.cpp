@@ -60,9 +60,9 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 
 	LoadFonts();
 	InitUI();
-	InitGameWorld();
-	RefreshUI();
 	InitStates();
+	//InitGameWorld();
+	//RefreshUI();
 
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets, &m_itemBoxes);
 
@@ -198,16 +198,10 @@ void Game::RefreshUI()
 
 void Game::InitGameWorld()
 {
-	InitPlayers();
-	InitAmmunitions();
-	InitRubies();
-	InitEnemies();
-	InitItemBoxes();
+
+	//InitItemBoxes();
 
 	// Static scenery objects
-	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
-		m_diffuseTexturedFogShader,
-		m_textureManager->GetTexture("Assets/Textures/ground.png")));
 
 }
 
@@ -487,6 +481,16 @@ void Game::Mode_Menu_OnExit()
 
 void Game::Story_Mode_OnEnter()
 {
+	InitPlayers();
+	InitAmmunitions();
+	InitRubies();
+	InitEnemies();
+
+	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
+		m_diffuseTexturedFogShader,
+		m_textureManager->GetTexture("Assets/Textures/ground.png")));
+
+	RefreshUI();
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
@@ -570,6 +574,17 @@ void Game::Story_Mode_OnExit()
 
 void Game::Competitive_Mode_OnEnter()
 {
+	InitPlayers();
+	InitAmmunitions();
+	InitRubies();
+	InitEnemies();
+	InitItemBoxes();
+
+	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
+		m_diffuseTexturedFogShader,
+		m_textureManager->GetTexture("Assets/Textures/ground.png")));
+
+	RefreshUI();
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
@@ -591,10 +606,6 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 			m_rubies.erase(m_rubies.begin() + i);
 			RefreshUI();
 		}
-	}
-
-	if (m_rubies.size() == 0) {
-		PostQuitMessage(0);
 	}
 
 	for (unsigned int i = 0; i < m_bullets.size(); i++) {
@@ -635,10 +646,6 @@ void Game::Competitive_Mode_OnRender()
 		m_gameObjects[i]->Render(m_renderer, m_currentCam);
 	}
 
-	for (unsigned int i = 0; i < m_rubies.size(); i++) {
-		m_rubies[i]->Render(m_renderer, m_currentCam);
-	}
-
 	for (unsigned int i = 0; i < m_bullets.size(); i++) {
 		m_bullets[i]->Render(m_renderer, m_currentCam);
 	}
@@ -653,6 +660,7 @@ void Game::Competitive_Mode_OnExit()
 
 void Game::Story_Mode_Pause_OnEnter()
 {
+
 	OutputDebugString("Pause OnEnter\n");
 }
 
@@ -714,7 +722,7 @@ void Game::DrawMenuUI()
 	m_startButton->Render();
 	m_quitButton->Render();
 
-	m_arialFont18->DrawString(m_spriteBatch, L"FIT2096 Week 9", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Assignment 2B ", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }
