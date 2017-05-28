@@ -13,7 +13,7 @@ Window::Window(const char* windowName, int width, int height, bool fullscreen)
 	m_windowName = windowName;
 	m_width = width;
 	m_height = height;
-	m_fullscreen = fullscreen;
+	m_fullscreen = true;
 	m_renderer = NULL;
 	m_input = NULL;
 

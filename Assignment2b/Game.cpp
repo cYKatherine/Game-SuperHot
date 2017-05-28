@@ -360,7 +360,7 @@ void Game::Update(float timestep)
 
 void Game::Render()
 {
-	m_renderer->BeginScene(0.8f, 1.0f, 0.9f, 1.0f);
+	m_renderer->BeginScene(1.0f, 0.99f, 0.89f, 1.0f);
 
 	m_stateMachine->Render();
 
@@ -528,6 +528,7 @@ void Game::Mode_Menu_OnExit()
 
 void Game::Story_Mode_OnEnter()
 {
+	ShowCursor(false);
 	if (m_firstTimeInit) 
 	{
 		InitPlayers();
@@ -630,6 +631,7 @@ void Game::Story_Mode_OnExit()
 
 void Game::Competitive_Mode_OnEnter()
 {
+	ShowCursor(false);
 	if (m_firstTimeInit)
 	{
 		InitPlayers();
