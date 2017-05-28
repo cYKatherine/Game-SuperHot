@@ -241,6 +241,10 @@ void Game::RefreshCompetitiveModeUI()
 	// Ensure text in UI matches latest scores etc (call this after data changes)
 	RefreshAmmunicationUI();
 	RefreshHealthUI();
+
+	std::wstringstream sss;
+	sss << "Score: " << m_competitiveModeScore;
+	competitiveModeScoreString = sss.str();
 }
 
 void Game::InitGameWorld()
@@ -404,7 +408,7 @@ void Game::DrawUI()
 	m_arialFont18->DrawString(m_spriteBatch, L"ESC to quit", Vector2(20, 160), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0,0));
 	m_arialFont18->DrawString(m_spriteBatch, ammunitionString.c_str(), Vector2(20, 130), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 	m_arialFont18->DrawString(m_spriteBatch, rubyString.c_str(), Vector2(20, 100), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
-
+	m_arialFont18->DrawString(m_spriteBatch, competitiveModeScoreString.c_str(), Vector2(20, 100), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	// Here's how we draw a sprite over our game (caching it in m_currentItemSprite so we don't have to find it every frame)
 	m_spriteBatch->Draw(m_healthBarSprite->GetShaderResourceView(), m_healthBarRect, Color(1.0f, 0.0f, 0.0f));
@@ -499,6 +503,11 @@ void Game::Shutdown()
 
 void Game::setMove(bool move) {
 	m_move = move;
+}
+
+void Game::updateScore(int score)
+{
+	m_competitiveModeScore += score;
 }
 
 bool Game::getMove() {
@@ -683,6 +692,7 @@ void Game::Story_Mode_OnRender()
 	}
 
 	DrawUI();
+	DrawGameUI();
 }
 
 void Game::Story_Mode_OnExit()
@@ -786,6 +796,7 @@ void Game::Competitive_Mode_OnRender()
 	}
 
 	DrawUI();
+	DrawGameUI();
 }
 
 void Game::Competitive_Mode_OnExit()
@@ -879,7 +890,7 @@ void Game::DrawGameUI()
 	BeginUI();
 
 	// We don't want to see instructional text like this in your assignments (that's what a readme is for)
-	m_arialFont18->DrawString(m_spriteBatch, L"P to toggle pause", Vector2(540, 680), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"P to toggle pause", Vector2(1200, 1400), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }
@@ -887,7 +898,7 @@ void Game::DrawGameUI()
 void Game::DrawPauseUI()
 {
 	BeginUI();
-	m_arialFont18->DrawString(m_spriteBatch, L"Paused", Vector2(605, 10), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Paused", Vector2(1200, 30), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 	EndUI();
 }
 

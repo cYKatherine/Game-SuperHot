@@ -64,6 +64,7 @@ private:
 
 	bool m_move = false;
 	bool m_firstTimeInit = true;
+	int m_competitiveModeScore = 0;
 
 	// Sprites / Fonts
 	SpriteBatch* m_spriteBatch;
@@ -101,6 +102,8 @@ private:
 
 	std::wstring ammunitionString;
 	std::wstring rubyString;
+	std::wstring competitiveModeScoreString;
+
 
 	// Initialisation Helpers
 	bool InitShaders();
@@ -183,6 +186,7 @@ public:
 	bool pickExplosive(Vector3 playerPosition);
 	void setExplosive(Vector3 playerPosition);
 	void explode(Vector3 explosivePosition);
+	void updateScore(int score);
 	Color* m_hurtOverlayColor;
 };
 

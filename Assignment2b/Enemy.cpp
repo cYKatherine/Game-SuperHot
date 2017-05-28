@@ -227,6 +227,7 @@ void Enemy::OnBulletCollisionEnter(bool fromPlayer, Bullet* bullet) {
 		Vector3 updatePosition = Vector3(bullet->GetPosition().x, 0, bullet->GetPosition().z);
 		ApplyForce((m_position - updatePosition) * 0.5f);
 		m_health -= 10;
+		Game::GetInstance()->updateScore(10);
 	}
 
 }
@@ -250,4 +251,5 @@ void Enemy::explosive()
 	Vector3 updatePosition = Vector3(m_position.x-5, 0, m_position.z-5);
 	ApplyForce((m_position - updatePosition) * 0.5f);
 	m_health -= 100;
+	Game::GetInstance()->updateScore(100);
 }
