@@ -60,6 +60,7 @@ private:
 	CollisionManager* m_collisionManager;
 
 	bool m_move = false;
+	bool m_firstTimeInit = true;
 
 	// Sprites / Fonts
 	SpriteBatch* m_spriteBatch;

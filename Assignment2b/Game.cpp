@@ -498,16 +498,22 @@ void Game::Mode_Menu_OnExit()
 
 void Game::Story_Mode_OnEnter()
 {
-	InitPlayers();
-	InitAmmunitions();
-	InitRubies();
-	InitEnemies();
+	if (m_firstTimeInit) 
+	{
+		InitPlayers();
+		InitAmmunitions();
+		InitRubies();
+		InitEnemies();
 
-	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
-		m_diffuseTexturedFogShader,
-		m_textureManager->GetTexture("Assets/Textures/ground.png")));
+		m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
+			m_diffuseTexturedFogShader,
+			m_textureManager->GetTexture("Assets/Textures/ground.png")));
 
-	RefreshStoryModeUI();
+		RefreshStoryModeUI();
+
+		m_firstTimeInit = false;
+	}
+	
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
@@ -591,17 +597,23 @@ void Game::Story_Mode_OnExit()
 
 void Game::Competitive_Mode_OnEnter()
 {
-	InitPlayers();
-	InitAmmunitions();
-	InitRubies();
-	InitEnemies();
-	InitItemBoxes();
+	if (m_firstTimeInit)
+	{
+		InitPlayers();
+		InitAmmunitions();
+		InitRubies();
+		InitEnemies();
+		InitItemBoxes();
 
-	m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
-		m_diffuseTexturedFogShader,
-		m_textureManager->GetTexture("Assets/Textures/ground.png")));
+		m_gameObjects.push_back(new StaticObject(m_meshManager->GetMesh("Assets/Meshes/ground.obj"),
+			m_diffuseTexturedFogShader,
+			m_textureManager->GetTexture("Assets/Textures/ground.png")));
 
-	RefreshCompetitiveModeUI();
+		RefreshCompetitiveModeUI();
+
+		m_firstTimeInit = false;
+	}
+
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
@@ -616,13 +628,6 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
 	{
 		m_gameObjects[i]->Update(timestep);
-	}
-
-	for (unsigned int i = 0; i < m_rubies.size(); i++) {
-		if (m_rubies[i]->getPicked()) {
-			m_rubies.erase(m_rubies.begin() + i);
-			RefreshCompetitiveModeUI();
-		}
 	}
 
 	for (unsigned int i = 0; i < m_bullets.size(); i++) {
