@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "AudioSystem.h"
 #include "PhysicsObject.h"
 #include "InputController.h"
 #include "Ammunition.h"
@@ -23,6 +24,7 @@ protected:
 	Camera* m_camera;
 
 	InputController* m_input;
+	AudioSystem* m_audio;
 
 	CBoundingBox m_boundingBox;
 	Vector3 m_minBounds;
@@ -44,7 +46,7 @@ protected:
 	Matrix m_pitch;
 
 public:
-	Player(Camera* cam, InputController* input);
+	Player(Camera* cam, InputController* input, AudioSystem* audio);
 
 	virtual void Update(float timestep);
 

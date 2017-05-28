@@ -18,6 +18,7 @@ Game* Game::m_pInstance = NULL;
 
 Game::Game()
 {
+	m_audio = NULL;
 	m_renderer = NULL;
 	m_currentCam = NULL;
 	m_input = NULL;
@@ -38,13 +39,15 @@ Game::Game()
 
 Game::~Game() {}
 
-bool Game::Initialise(Direct3D* renderer, InputController* input)
+bool Game::Initialise(Direct3D* renderer, AudioSystem* audio, InputController* input)
 {
 	m_renderer = renderer;
 	m_input = input;
+	m_audio = audio;
 	m_meshManager = new MeshManager();
 	m_textureManager = new TextureManager();
 	m_currentCam = new Camera();
+
 
 	m_healthBarRect = { 0, 0, 0, 0 };
 	m_hurtOverlayColor = NULL;
@@ -58,12 +61,29 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 	if (!LoadTextures())
 		return false;
 
+	if (!LoadAudio())
+		return false;
+
 	LoadFonts();
 	InitUI();
 	InitStates();
 
-
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets, &m_itemBoxes);
+
+	return true;
+}
+
+
+bool Game::LoadAudio()
+{
+	if (!m_audio->Load("Assets/Sounds/Shoot.wav"))
+		return false;
+
+	if (!m_audio->Load("Assets/Sounds/Torture.wav"))
+		return false;
+
+	if (!m_audio->Load("Assets/Sounds/Yes.wav"))
+		return false;
 
 	return true;
 }
@@ -224,7 +244,7 @@ void Game::InitGameWorld()
 
 void Game::InitPlayers()
 {
-	m_player = new Player(m_currentCam, m_input);
+	m_player = new Player(m_currentCam, m_input, m_audio);
 
 	m_gameObjects.push_back(m_player);
 	m_players.push_back(m_player);
@@ -265,7 +285,7 @@ void Game::InitEnemies() {
 		Enemy* enemy = new Enemy(m_meshManager->GetMesh("Assets/Meshes/enemy.obj"),
 			m_diffuseTexturedFogShader,
 			m_textureManager->GetTexture("Assets/Textures/gradient_redPink.png"),
-			position, i+1, m_player, m_rubies);
+			position, i+1, m_player, m_rubies, m_audio);
 
 		m_enemies.push_back(enemy);
 		m_gameObjects.push_back(enemy);
@@ -329,6 +349,9 @@ void Game::createBullet(Vector3 position, float rotationY, bool fromPlayer) {
 void Game::Update(float timestep)
 {
 	m_input->BeginUpdate();
+
+	// Assuming audio will be needed across multiple states
+	m_audio->Update();
 
 	m_stateMachine->Update(timestep);
 
@@ -441,6 +464,13 @@ void Game::Shutdown()
 	{
 		delete m_arialFont18;
 		m_arialFont18 = NULL;
+	}
+
+	if (m_audio)
+	{
+		m_audio->Shutdown();
+		delete m_audio;
+		m_audio = NULL;
 	}
 }
 
@@ -564,6 +594,9 @@ void Game::Story_Mode_OnUpdate(float timestep)
 
 	m_currentCam->Update(timestep);
 
+	// Set audio listener after the camera has updated so its data is valid on the first frame
+	m_audio->Update();
+
 	// Should we pause
 	if (m_input->GetKeyDown('P'))
 	{
@@ -652,6 +685,9 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 	m_collisionManager->CheckCollisions();
 
 	m_currentCam->Update(timestep);
+
+	// Set audio listener after the camera has updated so its data is valid on the first frame
+	m_audio->Update();
 
 	// Should we pause
 	if (m_input->GetKeyDown('P'))

@@ -4,11 +4,12 @@
 #include "Ammunition.h"
 
 
-Player::Player(Camera* cam, InputController* input) {
+Player::Player(Camera* cam, InputController* input, AudioSystem* audio) {
 	m_camera = cam;
 	m_input = input;
+	m_audio = audio;
 
-	m_moveSpeed = 5.0f;
+	m_moveSpeed = 8.0f;
 	m_rotationSpeed = 1.0f;
 	m_cameraHeight = 1.8f;
 	m_lookAtXRotation = 0;
@@ -85,6 +86,7 @@ void Player::Update(float timestep)
 	Vector3 lookAt = Vector3::TransformNormal(Vector3(0, 0, 1), lookAtRotation);
 
 	if (m_input->GetMouseDown(0)) {
+		m_audio->Play("Assets/Sounds/Shoot.wav", false);
 		if (m_bulletNo <= 0) {
 			if (m_ammunitionNo > 0) {
 				m_bulletNo += 10;
@@ -200,6 +202,7 @@ void Player::OnEnemyCollisionExit(Enemy* enemy) {
 
 void Player::OnBulletCollisionEnter(bool fromPlayer, Bullet* bullet) {
 	if (!fromPlayer) {
+		m_audio->Play("Assets/Sounds/Torture.wav", false);
 		Vector3 updatePosition = Vector3(bullet->GetPosition().x, 0, bullet->GetPosition().z);
 		ApplyForce((m_position - updatePosition) * 0.5f);
 		m_health -= 10;
