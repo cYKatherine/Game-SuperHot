@@ -167,7 +167,10 @@ public:
 	void Shutdown(); //Cleanup everything we initialised
 
 	void createBullet(Vector3 position, float rotationY, bool fromPlayer);
-	void RefreshUI();
+	void RefreshStoryModeUI();
+	void RefreshCompetitiveModeUI();
+	void RefreshHealthUI();
+	void RefreshAmmunicationUI();
 	void setMove(bool move);
 	bool getMove();
 	Color* m_hurtOverlayColor;

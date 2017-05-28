@@ -97,7 +97,7 @@ void Player::Update(float timestep)
 			m_fireCoolDown = 0;
 			m_lastTimeShoot = 0;
 			m_bulletNo -= 1;
-			Game::GetInstance()->RefreshUI();
+			Game::GetInstance()->RefreshAmmunicationUI();
 		}
 	}
 
@@ -146,7 +146,7 @@ void Player::OnItemBoxCollisionEnter(ItemBox* itemBox)
 	// Bounce off box - how could you take our velocity into account?
 	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
 	m_health += 100;
-	Game::GetInstance()->RefreshUI();
+	Game::GetInstance()->RefreshHealthUI();
 
 }
 
@@ -164,7 +164,7 @@ void Player::OnAmmunitionCollisionEnter(Ammunition* ammunition)
 	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
 	if (m_ammunitionNo < 2) {
 		m_ammunitionNo += 1;
-		Game::GetInstance()->RefreshUI();
+		Game::GetInstance()->RefreshAmmunicationUI();
 	}
 }
 
@@ -204,7 +204,7 @@ void Player::OnBulletCollisionEnter(bool fromPlayer, Bullet* bullet) {
 		ApplyForce((m_position - updatePosition) * 0.5f);
 		m_health -= 10;
 		Game::GetInstance()->m_hurtOverlayColor->A(1);
-		Game::GetInstance()->RefreshUI();
+		Game::GetInstance()->RefreshHealthUI();
 	}
 }
 

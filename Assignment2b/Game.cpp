@@ -61,8 +61,7 @@ bool Game::Initialise(Direct3D* renderer, InputController* input)
 	LoadFonts();
 	InitUI();
 	InitStates();
-	//InitGameWorld();
-	//RefreshUI();
+
 
 	m_collisionManager = new CollisionManager(&m_players, &m_ammunitions, &m_rubies, &m_enemies, &m_bullets, &m_itemBoxes);
 
@@ -184,16 +183,34 @@ void Game::InitUI()
 	});
 }
 
-void Game::RefreshUI()
+void Game::RefreshHealthUI()
 {
-	// Ensure text in UI matches latest scores etc (call this after data changes)
+	m_healthBarRect.right = 20 + m_player->getHealth() * 1.5;
+}
+
+void Game::RefreshAmmunicationUI()
+{
 	std::wstringstream ss, sss;
 	ss << "Ammunition No: " << m_player->getAmmunitionNo() << " Bullet No: " << m_player->getBulletNo();
 	ammunitionString = ss.str();
+}
+
+void Game::RefreshStoryModeUI()
+{
+	// Ensure text in UI matches latest scores etc (call this after data changes)
+	RefreshAmmunicationUI();
+	RefreshHealthUI();
+
+	std::wstringstream sss;
 	sss << "Ruby Left: " << m_rubies.size();
 	rubyString = sss.str();
-	m_healthBarRect.right = 20 + m_player->getHealth() * 1.5;
+}
 
+void Game::RefreshCompetitiveModeUI()
+{
+	// Ensure text in UI matches latest scores etc (call this after data changes)
+	RefreshAmmunicationUI();
+	RefreshHealthUI();
 }
 
 void Game::InitGameWorld()
@@ -490,7 +507,7 @@ void Game::Story_Mode_OnEnter()
 		m_diffuseTexturedFogShader,
 		m_textureManager->GetTexture("Assets/Textures/ground.png")));
 
-	RefreshUI();
+	RefreshStoryModeUI();
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
@@ -510,7 +527,7 @@ void Game::Story_Mode_OnUpdate(float timestep)
 	for (unsigned int i = 0; i < m_rubies.size(); i++) {
 		if (m_rubies[i]->getPicked()) {
 			m_rubies.erase(m_rubies.begin() + i);
-			RefreshUI();
+			RefreshStoryModeUI();
 		}
 	}
 
@@ -534,7 +551,7 @@ void Game::Story_Mode_OnUpdate(float timestep)
 
 	if (m_hurtOverlayColor->A() != 0) {
 		m_hurtOverlayColor->A(m_hurtOverlayColor->A() - 0.1);
-		RefreshUI();
+		RefreshStoryModeUI();
 	}
 
 	m_collisionManager->CheckCollisions();
@@ -584,7 +601,7 @@ void Game::Competitive_Mode_OnEnter()
 		m_diffuseTexturedFogShader,
 		m_textureManager->GetTexture("Assets/Textures/ground.png")));
 
-	RefreshUI();
+	RefreshCompetitiveModeUI();
 	OutputDebugString("GamePlay OnEnter\n");
 }
 
@@ -604,7 +621,7 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 	for (unsigned int i = 0; i < m_rubies.size(); i++) {
 		if (m_rubies[i]->getPicked()) {
 			m_rubies.erase(m_rubies.begin() + i);
-			RefreshUI();
+			RefreshCompetitiveModeUI();
 		}
 	}
 
@@ -624,7 +641,7 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 
 	if (m_hurtOverlayColor->A() != 0) {
 		m_hurtOverlayColor->A(m_hurtOverlayColor->A() - 0.1);
-		RefreshUI();
+		RefreshCompetitiveModeUI();
 	}
 
 	m_collisionManager->CheckCollisions();
