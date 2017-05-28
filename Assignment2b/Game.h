@@ -40,6 +40,7 @@ private:
 	enum class GameStates
 	{
 		MENU_STATE,
+		MODE_MENU_STATE,
 		GAMEPLAY_STATE,
 		PAUSE_STATE,
 		STATE_COUNT
@@ -49,7 +50,7 @@ private:
 
 	Game();
 	static Game* m_pInstance;
-	Camera* m_currentCam;		
+	Camera* m_currentCam;
 	Direct3D* m_renderer;
 	InputController* m_input;
 	MeshManager* m_meshManager;
@@ -65,13 +66,15 @@ private:
 
 	Button* m_startButton;
 	Button* m_quitButton;
+	Button* m_storyModeButton;
+	Button* m_competitiveModeButton;
 
 	// Shaders
 	Shader* m_unlitVertexColouredShader;
 	Shader* m_unlitTexturedShader;
 	Shader* m_diffuseTexturedShader;
 	Shader* m_diffuseTexturedFogShader;
-	
+
 	Player* m_player;
 
 	// This contains everything for easy calls to update and render
@@ -108,6 +111,7 @@ private:
 	void InitUI();
 	void DrawUI();
 	void DrawMenuUI();
+	void DrawModeMenuUI();
 	void DrawGameUI();
 	void DrawPauseUI();
 	void BeginUI();
@@ -119,6 +123,11 @@ private:
 	void Menu_OnUpdate(float timestep);
 	void Menu_OnRender();
 	void Menu_OnExit();
+	
+	void Mode_Menu_OnEnter();
+	void Mode_Menu_OnUpdate(float timestep);
+	void Mode_Menu_OnRender();
+	void Mode_Menu_OnExit();
 
 	void Gameplay_OnEnter();
 	void Gameplay_OnUpdate(float timestep);
