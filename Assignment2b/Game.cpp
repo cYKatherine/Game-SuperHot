@@ -88,6 +88,9 @@ bool Game::LoadAudio()
 	if (!m_audio->Load("Assets/Sounds/beep.mp3"))
 		return false;
 
+	if (!m_audio->Load("Assets/Sounds/Explosion.wav"))
+		return false;
+
 	return true;
 }
 
@@ -157,6 +160,10 @@ bool Game::LoadTextures()
 	if (!m_textureManager->Load(m_renderer, "Assets/Textures/button.png"))
 		return false;
 	if (!m_textureManager->Load(m_renderer, "Assets/Textures/item_box.png"))
+		return false;
+	if (!m_textureManager->Load(m_renderer, "Assets/Textures/kart_green.png"))
+		return false;
+	if (!m_textureManager->Load(m_renderer, "Assets/Textures/kart_red.png"))
 		return false;
 
 	return true;
@@ -307,6 +314,20 @@ void Game::InitItemBoxes()
 	m_itemBoxes.push_back(itemBox);
 	m_gameObjects.push_back(itemBox);
 }
+
+void Game::InitExplosives() 
+{
+	Vector3 position = Vector3(MathsHelper::RandomRange(-50.0f, 50.0f), 0.0f, MathsHelper::RandomRange(-50.0f, 50.0f));
+
+	Explosive* explosive = new Explosive(m_meshManager->GetMesh("Assets/Meshes/ammoBlock.obj"),
+		m_diffuseTexturedFogShader,
+		m_textureManager->GetTexture("Assets/Textures/kart_green.png"),
+		position, m_audio);
+
+	m_explosive = explosive;
+	m_explosives.push_back(explosive);
+}
+
 
 void Game::InitStates()
 {
@@ -485,6 +506,44 @@ bool Game::getMove() {
 	return m_move;
 }
 
+bool Game::pickExplosive(Vector3 playerPosition)
+{
+	if (Vector3::Distance(playerPosition, m_explosive->GetPosition()) <= 3) {
+		m_explosive->setPicked(true);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Game::explode(Vector3 explosivePosition)
+{
+	for (int i = 0; i < m_enemies.size(); i++)
+	{
+		if (Vector3::Distance(explosivePosition, m_enemies[i]->GetPosition()) <= 100)
+		{
+			m_enemies[i]->explosive();
+		}
+	}
+
+	if (Vector3::Distance(explosivePosition, m_player->GetPosition()) <= 100)
+	{
+		m_player->explosive();
+	}
+
+	m_explosive->setExploded(true);
+}
+
+void Game::setExplosive(Vector3 playerPosition)
+{
+	m_explosive->SetPosition(playerPosition);
+	m_explosive->setPicked(false);
+	m_explosive->setReadyToExplode(true);
+	m_explosive->SetTexture(m_textureManager->GetTexture("Assets/Textures/kart_red.png"));
+}
+
 void Game::Menu_OnEnter()
 {
 	OutputDebugString("Menu OnEnter\n");
@@ -637,6 +696,7 @@ void Game::Competitive_Mode_OnEnter()
 	ShowCursor(false);
 	if (m_firstTimeInit)
 	{
+		InitExplosives();
 		InitPlayers();
 		InitAmmunitions();
 		InitRubies();
@@ -682,6 +742,11 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 		m_enemies[i]->updateRubies(m_rubies);
 	}
 
+	if (!m_explosive->getExploded())
+	{ 
+		m_explosive->Update(timestep);
+	}
+	
 	if (m_hurtOverlayColor->A() != 0) {
 		m_hurtOverlayColor->A(m_hurtOverlayColor->A() - 0.1);
 		RefreshCompetitiveModeUI();
@@ -707,6 +772,14 @@ void Game::Competitive_Mode_OnRender()
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++)
 	{
 		m_gameObjects[i]->Render(m_renderer, m_currentCam);
+	}
+
+	for (unsigned int i = 0; i < m_explosives.size(); i++)
+	{
+		if (!m_explosive->getPicked() && !m_explosive->getExploded())
+		{
+			m_explosives[i]->Render(m_renderer, m_currentCam);
+		}
 	}
 
 	for (unsigned int i = 0; i < m_bullets.size(); i++) {

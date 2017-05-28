@@ -56,6 +56,7 @@ public:
 
 	void updateRubies(std::vector<Ruby*> rubies);
 
+	void explosive();
 	int getHealth();
 	Matrix getHeading();
 

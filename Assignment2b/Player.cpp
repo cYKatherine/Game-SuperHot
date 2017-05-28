@@ -105,6 +105,22 @@ void Player::Update(float timestep)
 
 	m_fireCoolDown += 1;
 
+	// Pick up the explosive if it is within the range when pressing 'E'
+	if (m_input->GetKeyDown('E'))
+	{
+		if (m_explosivePicked)
+		{
+			Game::GetInstance()->setExplosive(m_position);
+		}
+		else
+		{
+			if (Game::GetInstance()->pickExplosive(m_position))
+			{
+				m_explosivePicked = true;
+			}
+		}
+	}
+
 	// Our look-at vector is still a tiny vector
 	// Add our position to it so it describes a point in front of the camera
 	// Remember the look-at vector needs to describe a point in the world relative to the origin
@@ -236,4 +252,14 @@ float Player::getRotationSpeed() {
 
 Matrix Player::getHeading() {
 	return m_heading;
+}
+
+void Player::explosive()
+{
+	m_audio->Play("Assets/Sounds/Torture.wav", false);
+	Vector3 updatePosition = Vector3(m_position.x-5, 0, m_position.z-5);
+	ApplyForce((m_position - updatePosition) * 0.5f);
+	m_health -= 10;
+	Game::GetInstance()->m_hurtOverlayColor->A(1);
+	Game::GetInstance()->RefreshHealthUI();
 }

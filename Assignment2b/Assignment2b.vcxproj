@@ -128,6 +128,7 @@
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Explosive.h" />
     <ClInclude Include="InputController.h" />
     <ClInclude Include="ItemBox.h" />
     <ClInclude Include="MathsHelper.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Explosive.cpp" />
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="Main.cpp" />

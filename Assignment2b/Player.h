@@ -42,6 +42,8 @@ protected:
 	int m_ammunitionNo = 2;
 	int m_bulletNo = 0;
 
+	bool m_explosivePicked = false;
+
 	Matrix m_heading;
 	Matrix m_pitch;
 
@@ -74,6 +76,7 @@ public:
 	void OnBulletCollisionStay(bool fromPlayer, Bullet* bullet);
 	void OnBulletCollisionExit(bool fromPlayer, Bullet* bullet);
 
+	void explosive();
 	float getMoveSpeed();
 	float getRotationSpeed();
 	int getHealth();

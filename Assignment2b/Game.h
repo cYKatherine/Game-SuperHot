@@ -25,7 +25,7 @@
 #include "StateMachine.h"
 #include "Button.h"
 #include "ItemBox.h"
-
+#include "Explosive.h"
 
 #include "DirectXTK/SpriteBatch.h"
 #include "DirectXTK/SpriteFont.h"
@@ -60,6 +60,7 @@ private:
 	TextureManager* m_textureManager;
 	CollisionManager* m_collisionManager;
 	AudioSystem* m_audio;
+	Explosive* m_explosive;
 
 	bool m_move = false;
 	bool m_firstTimeInit = true;
@@ -92,6 +93,7 @@ private:
 	std::vector<Enemy*> m_enemies;
 	std::vector<Bullet*> m_bullets;
 	std::vector<ItemBox*> m_itemBoxes;
+	std::vector<Explosive*> m_explosives;
 
 	RECT m_healthBarRect;
 	Texture* m_hurtOverlaySprite;
@@ -113,6 +115,7 @@ private:
 	void InitEnemies();
 	void InitStates();
 	void InitItemBoxes();
+	void InitExplosives();
 
 	void InitUI();
 	void DrawUI();
@@ -177,6 +180,9 @@ public:
 	void RefreshAmmunicationUI();
 	void setMove(bool move);
 	bool getMove();
+	bool pickExplosive(Vector3 playerPosition);
+	void setExplosive(Vector3 playerPosition);
+	void explode(Vector3 explosivePosition);
 	Color* m_hurtOverlayColor;
 };
 
