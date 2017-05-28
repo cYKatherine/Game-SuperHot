@@ -703,7 +703,7 @@ void Game::Story_Mode_OnRender()
 		m_bullets[i]->Render(m_renderer, m_currentCam);
 	}
 
-	DrawUI();
+	DrawStoryModeUI();
 	DrawGameUI();
 }
 
@@ -816,7 +816,7 @@ void Game::Competitive_Mode_OnRender()
 		m_bullets[i]->Render(m_renderer, m_currentCam);
 	}
 
-	DrawUI();
+	DrawCompetitiveModeUI();
 	DrawGameUI();
 }
 
@@ -889,7 +889,7 @@ void Game::DrawMenuUI()
 	m_startButton->Render();
 	m_quitButton->Render();
 
-	m_arialFont18->DrawString(m_spriteBatch, L"Assignment 2B ", Vector2(1200, 600), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Assignment2B ", Vector2(1200, 600), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }
@@ -904,6 +904,52 @@ void Game::DrawModeMenuUI()
 	m_arialFont18->DrawString(m_spriteBatch, L"Assignment2B", Vector2(1200, 600), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
+}
+
+void Game::DrawStoryModeUI()
+{
+	// Sprites don't use a shader
+	m_renderer->SetCurrentShader(NULL);
+
+	CommonStates states(m_renderer->GetDevice());
+	m_spriteBatch->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
+
+	// Do UI drawing between the Begin and End calls
+
+	// Let's draw some text over our game
+	m_arialFont18->DrawString(m_spriteBatch, L"ESC to quit", Vector2(20, 160), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, ammunitionString.c_str(), Vector2(20, 130), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, rubyString.c_str(), Vector2(20, 100), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+
+	// Here's how we draw a sprite over our game (caching it in m_currentItemSprite so we don't have to find it every frame)
+	m_spriteBatch->Draw(m_healthBarSprite->GetShaderResourceView(), m_healthBarRect, Color(1.0f, 0.0f, 0.0f));
+	m_spriteBatch->Draw(m_hurtOverlaySprite->GetShaderResourceView(), Vector2(20, 20), *m_hurtOverlayColor);
+	//m_spriteBatch->Draw(m_currentItemSprite->GetShaderResourceView(), Vector2(20, 20), Color(1.0f, 1.0f, 1.0f));
+
+	m_spriteBatch->End();
+}
+
+void Game::DrawCompetitiveModeUI()
+{
+	// Sprites don't use a shader
+	m_renderer->SetCurrentShader(NULL);
+
+	CommonStates states(m_renderer->GetDevice());
+	m_spriteBatch->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
+
+	// Do UI drawing between the Begin and End calls
+
+	// Let's draw some text over our game
+	m_arialFont18->DrawString(m_spriteBatch, L"ESC to quit", Vector2(20, 160), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, ammunitionString.c_str(), Vector2(20, 130), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, competitiveModeScoreString.c_str(), Vector2(20, 100), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+
+	// Here's how we draw a sprite over our game (caching it in m_currentItemSprite so we don't have to find it every frame)
+	m_spriteBatch->Draw(m_healthBarSprite->GetShaderResourceView(), m_healthBarRect, Color(1.0f, 0.0f, 0.0f));
+	m_spriteBatch->Draw(m_hurtOverlaySprite->GetShaderResourceView(), Vector2(20, 20), *m_hurtOverlayColor);
+	//m_spriteBatch->Draw(m_currentItemSprite->GetShaderResourceView(), Vector2(20, 20), Color(1.0f, 1.0f, 1.0f));
+
+	m_spriteBatch->End();
 }
 
 void Game::DrawGameUI()

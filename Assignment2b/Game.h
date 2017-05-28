@@ -122,6 +122,8 @@ private:
 
 	void InitUI();
 	void DrawUI();
+	void DrawStoryModeUI();
+	void DrawCompetitiveModeUI();
 	void DrawMenuUI();
 	void DrawModeMenuUI();
 	void DrawGameUI();
