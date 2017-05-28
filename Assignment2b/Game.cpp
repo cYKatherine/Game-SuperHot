@@ -285,7 +285,7 @@ void Game::InitEnemies() {
 		Enemy* enemy = new Enemy(m_meshManager->GetMesh("Assets/Meshes/enemy.obj"),
 			m_diffuseTexturedFogShader,
 			m_textureManager->GetTexture("Assets/Textures/gradient_redPink.png"),
-			position, i+1, m_player, m_rubies);
+			position, i+1, m_player, m_rubies, m_audio);
 
 		m_enemies.push_back(enemy);
 		m_gameObjects.push_back(enemy);
@@ -349,6 +349,9 @@ void Game::createBullet(Vector3 position, float rotationY, bool fromPlayer) {
 void Game::Update(float timestep)
 {
 	m_input->BeginUpdate();
+
+	// Assuming audio will be needed across multiple states
+	m_audio->Update();
 
 	m_stateMachine->Update(timestep);
 
@@ -461,6 +464,13 @@ void Game::Shutdown()
 	{
 		delete m_arialFont18;
 		m_arialFont18 = NULL;
+	}
+
+	if (m_audio)
+	{
+		m_audio->Shutdown();
+		delete m_audio;
+		m_audio = NULL;
 	}
 }
 
@@ -584,6 +594,9 @@ void Game::Story_Mode_OnUpdate(float timestep)
 
 	m_currentCam->Update(timestep);
 
+	// Set audio listener after the camera has updated so its data is valid on the first frame
+	m_audio->Update();
+
 	// Should we pause
 	if (m_input->GetKeyDown('P'))
 	{
@@ -672,6 +685,9 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 	m_collisionManager->CheckCollisions();
 
 	m_currentCam->Update(timestep);
+
+	// Set audio listener after the camera has updated so its data is valid on the first frame
+	m_audio->Update();
 
 	// Should we pause
 	if (m_input->GetKeyDown('P'))

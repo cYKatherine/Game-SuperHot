@@ -4,10 +4,11 @@
 #include "Ammunition.h"
 
 
-Enemy::Enemy(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, int enemyNo, Player* playerToFollow, std::vector<Ruby*> rubies) :
+Enemy::Enemy(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, int enemyNo, Player* playerToFollow, std::vector<Ruby*> rubies, AudioSystem* audio) :
 	PhysicsObject(mesh, shader, texture, position)
 {
 	m_playerToFollow = playerToFollow;
+	m_audio = audio;
 	m_moveSpeed = MathsHelper::RandomRange(0.05f, 0.1f);
 	m_enemyNo = enemyNo;
 	m_rubies = rubies;
@@ -222,6 +223,7 @@ void Enemy::OnPlayerCollisionExit(Player* player) {
 
 void Enemy::OnBulletCollisionEnter(bool fromPlayer, Bullet* bullet) {
 	if (fromPlayer) {
+		m_audio->Play("Assets/Sounds/Yes.wav", false);
 		Vector3 updatePosition = Vector3(bullet->GetPosition().x, 0, bullet->GetPosition().z);
 		ApplyForce((m_position - updatePosition) * 0.5f);
 		m_health -= 10;

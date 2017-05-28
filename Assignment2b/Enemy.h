@@ -1,6 +1,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#include "AudioSystem.h"
 #include "PhysicsObject.h"
 #include "MathsHelper.h"
 #include "Ruby.h"
@@ -16,6 +17,7 @@ class Enemy : public PhysicsObject
 {
 protected:
 	CBoundingBox m_boundingBox;
+	AudioSystem* m_audio;
 
 	Player* m_playerToFollow;
 
@@ -32,7 +34,7 @@ protected:
 	Matrix m_heading;
 
 public:
-	Enemy(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, int enemyNo, Player* playerToFollow, std::vector<Ruby*> rubies);
+	Enemy(Mesh* mesh, Shader* shader, Texture* texture, Vector3 position, int enemyNo, Player* playerToFollow, std::vector<Ruby*> rubies, AudioSystem* audio);
 
 	virtual void Update(float timestep);
 
