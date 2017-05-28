@@ -626,6 +626,15 @@ void Game::Story_Mode_OnUpdate(float timestep)
 	// Update all our gameobjects. What they really are doesn't matter
 	if (m_input->GetKeyDown(VK_ESCAPE))
 	{
+		std::string message = "Ruby left: " + std::to_string(m_rubies.size());
+		MessageBox(0, message.c_str(), "Quit", MB_OK);
+		PostQuitMessage(0);
+	}
+
+	if (m_player->getHealth() <= 0)
+	{
+		std::string message = "You died :-(\nRuby left: " + std::to_string(m_rubies.size());
+		MessageBox(0, message.c_str(), "Game Over", MB_OK);
 		PostQuitMessage(0);
 	}
 
@@ -732,6 +741,15 @@ void Game::Competitive_Mode_OnUpdate(float timestep)
 	// Update all our gameobjects. What they really are doesn't matter
 	if (m_input->GetKeyDown(VK_ESCAPE))
 	{
+		std::string message = "Final score: " + std::to_string(m_competitiveModeScore);
+		MessageBox(0, message.c_str(), "Quit", MB_OK);
+		PostQuitMessage(0);
+	}
+
+	if (m_player->getHealth() <= 0)
+	{
+		std::string message = "You died :-(\nFinal score: " + std::to_string(m_competitiveModeScore);
+		MessageBox(0, message.c_str(), "Game Over", MB_OK);
 		PostQuitMessage(0);
 	}
 
