@@ -150,7 +150,6 @@ void Player::OnItemBoxCollisionEnter(ItemBox* itemBox)
 	//ApplyForce((m_position - other->GetPosition()) * 0.5f);
 	m_health += 100;
 	Game::GetInstance()->RefreshHealthUI();
-
 }
 
 void Player::OnItemBoxCollisionStay()

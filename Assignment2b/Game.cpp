@@ -181,25 +181,25 @@ void Game::InitUI()
 	Texture* buttonTexture = m_textureManager->GetTexture("Assets/Textures/button.png");
 
 	// Also init any buttons here
-	m_startButton = new Button(128, 64, buttonTexture, L"Start Game", Vector2(574, 385), m_spriteBatch, m_arialFont12, m_input, [this]
+	m_startButton = new Button(128, 64, buttonTexture, L"Start Game", Vector2(1148, 750), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Transition into the Gameplay state (these buttons are only used on the menu screen)
 		m_stateMachine->ChangeState(GameStates::MODE_MENU_STATE);
 	});
 
-	m_quitButton = new Button(128, 64, buttonTexture, L"Quit", Vector2(706, 385), m_spriteBatch, m_arialFont12, m_input, [this]
+	m_quitButton = new Button(128, 64, buttonTexture, L"Quit", Vector2(1412, 750), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Tell windows to send a WM_QUIT message into our message pump
 		PostQuitMessage(0);
 	});
 
-	m_storyModeButton = new Button(128, 64, buttonTexture, L"Story Mode", Vector2(574, 385), m_spriteBatch, m_arialFont12, m_input, [this]
+	m_storyModeButton = new Button(128, 64, buttonTexture, L"Story Mode", Vector2(1148, 750), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Transition into the Gameplay state (these buttons are only used on the menu screen)
 		m_stateMachine->ChangeState(GameStates::STORYMODE_STATE);
 	});
 
-	m_competitiveModeButton = new Button(128, 64, buttonTexture, L"Competitive Mode", Vector2(706, 385), m_spriteBatch, m_arialFont12, m_input, [this]
+	m_competitiveModeButton = new Button(128, 64, buttonTexture, L"Competitive Mode", Vector2(1412, 750), m_spriteBatch, m_arialFont12, m_input, [this]
 	{
 		// Tell windows to send a WM_QUIT message into our message pump
 		m_stateMachine->ChangeState(GameStates::COMPETITIVEMODE_STATE);
@@ -382,12 +382,12 @@ void Game::DrawUI()
 
 	// Let's draw some text over our game
 	m_arialFont18->DrawString(m_spriteBatch, L"ESC to quit", Vector2(20, 160), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0,0));
-	m_arialFont18->DrawString(m_spriteBatch, ammunitionString.c_str(), Vector2(20, 140), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
-	m_arialFont18->DrawString(m_spriteBatch, rubyString.c_str(), Vector2(20, 120), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, ammunitionString.c_str(), Vector2(20, 130), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, rubyString.c_str(), Vector2(20, 100), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 
 	// Here's how we draw a sprite over our game (caching it in m_currentItemSprite so we don't have to find it every frame)
-	m_spriteBatch->Draw(m_healthBarSprite->GetShaderResourceView(), m_healthBarRect, Color(1.0f, 1.0f, 1.0f));
+	m_spriteBatch->Draw(m_healthBarSprite->GetShaderResourceView(), m_healthBarRect, Color(1.0f, 0.0f, 0.0f));
 	m_spriteBatch->Draw(m_hurtOverlaySprite->GetShaderResourceView(), Vector2(20, 20), *m_hurtOverlayColor);
 	//m_spriteBatch->Draw(m_currentItemSprite->GetShaderResourceView(), Vector2(20, 20), Color(1.0f, 1.0f, 1.0f));
 
@@ -785,7 +785,7 @@ void Game::DrawMenuUI()
 	m_startButton->Render();
 	m_quitButton->Render();
 
-	m_arialFont18->DrawString(m_spriteBatch, L"Assignment 2B ", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Assignment 2B ", Vector2(1200, 600), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }
@@ -797,7 +797,7 @@ void Game::DrawModeMenuUI()
 	m_storyModeButton->Render();
 	m_competitiveModeButton->Render();
 
-	m_arialFont18->DrawString(m_spriteBatch, L"Assignment2B", Vector2(550, 295), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
+	m_arialFont18->DrawString(m_spriteBatch, L"Assignment2B", Vector2(1200, 600), Color(0.0f, 0.0f, 0.0f), 0, Vector2(0, 0));
 
 	EndUI();
 }
