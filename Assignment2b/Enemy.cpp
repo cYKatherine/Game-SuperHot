@@ -249,5 +249,5 @@ void Enemy::explosive()
 {
 	Vector3 updatePosition = Vector3(m_position.x-5, 0, m_position.z-5);
 	ApplyForce((m_position - updatePosition) * 0.5f);
-	m_health -= 10;
+	m_health -= 100;
 }

@@ -259,7 +259,7 @@ void Player::explosive()
 	m_audio->Play("Assets/Sounds/Torture.wav", false);
 	Vector3 updatePosition = Vector3(m_position.x-5, 0, m_position.z-5);
 	ApplyForce((m_position - updatePosition) * 0.5f);
-	m_health -= 10;
+	m_health -= 100;
 	Game::GetInstance()->m_hurtOverlayColor->A(1);
 	Game::GetInstance()->RefreshHealthUI();
 }

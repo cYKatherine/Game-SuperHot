@@ -328,7 +328,6 @@ void Game::InitExplosives()
 	m_explosives.push_back(explosive);
 }
 
-
 void Game::InitStates()
 {
 	// Our state machine needs to know its owner (so it only runs the callbacks while its owner exists)
